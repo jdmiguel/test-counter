@@ -14,7 +14,11 @@ Enzyme.configure({ adapter: new Adapter() });
  * @returns {ShallowWrapper}
 */
 
-const setup = (props={}, state=null) => shallow(<App {...props}/>);
+const setup = (props={}, state=null) => {
+  const wrapper = shallow(<App {...props}/>);
+  if(state) wrapper.setState(state);
+  return wrapper;
+};
 
 /**
  * Function to return shallowWrapper containing node(s) with the given data-test value
@@ -49,9 +53,20 @@ test('renders counter display', () => {
 });
 
 test('counter starts at cero', () => {
-
+  const wrapper = setup();
+  const initialCounterState = wrapper.state('counter');
+  expect(initialCounterState).toBe(0);
 });
 
 test('clicking button increments counter display', () => {
+  const counter = 7;
+  const wrapper = setup(null, { counter });
 
+  // find button and click
+  const button = findByTextAttr(wrapper, 'increment-button');
+  button.simulate('click');
+
+  // find display and test value
+  const counterDisplay = findByTextAttr(wrapper, 'counter-display');
+  expect(counterDisplay.text()).toContain(counter + 1); 
 });
