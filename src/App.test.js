@@ -55,6 +55,7 @@ test('renders counter display', () => {
 test('counter starts at cero', () => {
   const wrapper = setup();
   const initialCounterState = wrapper.state('counter');
+
   expect(initialCounterState).toBe(0);
 });
 
@@ -66,7 +67,41 @@ test('clicking button increments counter display', () => {
   const button = findByTextAttr(wrapper, 'increment-button');
   button.simulate('click');
 
-  // find display and test value
+  // find display
   const counterDisplay = findByTextAttr(wrapper, 'counter-display');
+
+  // test value
   expect(counterDisplay.text()).toContain(counter + 1); 
+});
+
+test('clicking button decreases counter display', () => {
+  const counter = 7;
+  const wrapper = setup(null, { counter });
+
+  // find button and click
+  const button = findByTextAttr(wrapper, 'decrease-button');
+  button.simulate('click');
+
+  // find display
+  const counterDisplay = findByTextAttr(wrapper, 'counter-display');
+
+  // test value
+  expect(counterDisplay.text()).toContain(counter - 1); 
+});
+
+test('clicking button decreases counter when counter is higher than zero', () => {
+  const wrapper = setup(null, { counter: 0 });
+
+  // find button and click
+  const button = findByTextAttr(wrapper, 'decrease-button');
+  button.simulate('click');
+
+  // get counter state, check if it is higher than zero and if it is true, decrement state 
+  const counterState = wrapper.state('counter');
+  if(counterState > 0){
+    wrapper.setState({counter: counterState - 1});
+  };
+
+  // test value
+  expect(wrapper.state('counter')).toBeGreaterThanOrEqual(0);
 });
