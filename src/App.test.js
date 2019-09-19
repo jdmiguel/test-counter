@@ -105,3 +105,19 @@ test('clicking button decreases counter when counter is higher than zero', () =>
   // test value
   expect(wrapper.state('counter')).toBeGreaterThanOrEqual(0);
 });
+
+test('show error message when counter go bellow zero', () => {
+  const wrapper = setup(null, { counter: 0, errorMessageShowed: false });
+
+  // find button and click
+  const button = findByTextAttr(wrapper, 'decrease-button');
+  button.simulate('click');
+
+  // get counter state, check if it is equal than zero and if it is true, set errorMessageShowed state to true
+  if(wrapper.state('counter') === 0){
+    wrapper.setState({errorMessageShowed: true});
+  };
+
+  // test value
+  expect(wrapper.state('errorMessageShowed')).toBeTruthy();
+});
